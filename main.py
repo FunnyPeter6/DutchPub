@@ -21,7 +21,7 @@ def draw(draw_info):
 def main():
     run = True
     clock = pygame.time.Clock()
-    draw_info = DrawInformations(1500, 1000)    # resolution
+    draw_info = DrawInformations(1200, 1000)    # resolution
 
     while run:
         clock.tick(60)      # gmae speed (fps)
