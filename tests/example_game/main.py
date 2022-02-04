@@ -1,11 +1,9 @@
 import random
 
-
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
 ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
 values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8, 
             'Nine':9, 'Ten':10, 'Jack':11, 'Queen':12, 'King':13, 'Ace':14}
-
 
 class Card():
     # card class 
@@ -38,25 +36,6 @@ class Deck():
     def deal_one(self):
         return self.all_cards.pop()
 
-# create new deck of cards
-new_deck = Deck()
-
-# shuffle the new deck
-new_deck.shuffle()
-
-# debugging line, prints the whole deck
-""" for card_object in new_deck.all_cards:
-    print(card_object) """
-
-# trigger the deal one card
-my_card = new_deck.deal_one()
-
-# debugging line, prints the popped card
-#print(popped_card)
-
-# debugging line, prints the length of the new deck after popping a card
-#print(len(new_deck.all_cards))
-
 class Player():
     # player class, has a name, able to remova or add a card to hand, and hold those cards
     def __init__(self, name):
@@ -78,23 +57,77 @@ class Player():
     def __str__(self) -> str:
         return f'Player {self.name} has {len(self.all_cards)} cards.'
 
-# creates player with name
-new_player = Player("Cyperus")
+# GAME STEUP
 
-# debugging line, prints the player hand
-print(new_player)
+player_one = Player("One")
+player_two = Player("Two")
 
-# debugging line, adds a card(s) to the player hand
-new_player.add_cards([my_card,my_card,my_card,my_card,my_card])
+new_deck = Deck()
+new_deck.shuffle()
 
-# debugging line, prints wich card is added
-print(my_card)
+for x in range(26):
+    player_one.add_cards(new_deck.deal_one())
+    player_two.add_cards(new_deck.deal_one())
 
-# debugging line, print player again
-print(new_player)
+game_on = True
 
-# removes a card from player's hand
-new_player.remove_one()
+round_num = 0
 
-# debugging line, print player
-print(new_player)
+while game_on:
+    round_num += 1
+    print(f"Round {round_num}")
+
+    if len(player_one.all_cards) == 0:
+        print('Player One, out of cards! Player Two wins!')
+        game_on = False
+        break
+    if len(player_two.all_cards) == 0:
+        print('Player Two, out of cards! Player One wins!')
+        game_on = False
+        break
+
+    # start a new round
+    player_one_cards = []
+    player_one_cards.append(player_one.remove_one())
+
+    player_two_cards = []
+    player_two_cards.append(player_two.remove_one())
+
+
+    at_war = True
+
+    while at_war:
+
+        if player_one_cards[-1].value > player_two_cards[-1].value:
+
+            player_one.add_cards(player_one_cards)
+            player_one.add_cards(player_two_cards)
+
+            at_war = False
+
+        elif player_one_cards[-1].value < player_two_cards[-1].value:
+
+            player_two.add_cards(player_one_cards)
+            player_two.add_cards(player_two_cards)
+
+            at_war = False
+
+        else:
+            print('WAR!')
+
+            if len(player_one.all_cards) < 5:
+                print("Player One is unable to declare war.")
+                print("Player Two wins!")
+                game_on = False
+                break
+
+            elif len(player_two.all_cards) < 5:
+                print("Player Two is unable to declare war.")
+                print("Player One wins!")
+                game_on = False
+                break
+
+            else:
+                for num in range(3):
+                    player_one_cards.append(player_one.remove_one())
+                    player_two_cards.append(player_two.remove_one())
